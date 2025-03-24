@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probando la API rest </title>
+
+    <style>
+        article{
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 1rem; 
+        }
+
+        article{
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        img{
+            max-width: 100px;
+            width: auto;
+            
+        }
+    </style>  
+
+    
+    
+
+</head>
+<body>
+    <main>
+    </main>    
+
+    <script>
+        console.log('hola mundo')
+        fetch('http://localhost:1234/movies')
+        .then(response => response.json())
+        .then(movies => {
+            const html = movies.map(movie => {
+                return `
+                    <article data-id="${movie.id}">
+                        <h2>${movie.title}</h2>
+                        <img src="${movie.image}" alt="${movie.title}">
+                        <p>${movie.director}</p>
+                        <p>${movie.genre}</p>
+                        <p>${movie.year}</p>
+
+                        <button> Eliminar </button> 
+                    </article>
+                ` 
+            })
+
+            document.querySelector('main').innerHTML = html.join('')
+            document.addEventListener('click', e => {
+                if(e.target.matches('button')){
+                    const article = e.target.closest('article')
+                    const id = article.dataset.id
+                    console.log(id)
+                    fetch(`http://localhost:1234/movies/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if(response.ok){
+                            article.remove()
+                        }
+                    })
+                }
+            })
+            
+        })
+    </script>
+</body>
+</html>
